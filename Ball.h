@@ -6,7 +6,7 @@
 class Ball
 {
 private:
-	sf::CircleShape shape;
+	sf::CircleShape shape; // Dessiner la balle sur l'écran
 	sf::Vector2f oldPosition;
 	sf::Vector2f position;
 	float speed;
@@ -18,7 +18,7 @@ private:
 
 	void manageCollisionWith(sf::RenderWindow& window); //Collisions bordures
 
-	/*void manageCollisionWith(Player& player); //Collisions plateforme*/
+	//void manageCollisionWith(Player& player); //Collisions plateforme
 
 public:
 	Ball(int x, int y, int radius, float speed);

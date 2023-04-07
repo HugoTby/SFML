@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	Brick b();
 
 
-	// on fait tourner le programme jusqu'Ã  ce que la fenÃªtre soit fermÃ©e
+	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
 		rectanglehaut.setPosition(0, 0);
@@ -41,19 +41,19 @@ int main(int argc, char **argv)
 
 		
 
-		// on inspecte tous les Ã©vÃ¨nements de la fenÃªtre qui ont Ã©tÃ© Ã©mis depuis la prÃ©cÃ©dente itÃ©ration
+		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			// Ã©vÃ¨nement "fermeture demandÃ©e" : on ferme la fenÃªtre
+			// évènement "fermeture demandée" : on ferme la fenêtre
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
 
-		// effacer la fenÃªtre (avec une couleur de fond)
+		// effacer la fenêtre (avec une couleur de fond)
 		window.clear(sf::Color::Black);
 
-		// dessiner le rectangle sur la fenÃªtre
+		// dessiner le rectangle sur la fenêtre
 		
 		window.draw(rectanglehaut);
 		window.draw(rectanglebas);
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 			window.draw(rdr2);
 		}
 
-		// afficher le contenu de la fenÃªtre Ã  l'Ã©cran
+		// afficher le contenu de la fenêtre à l'écran
 		window.display();
 	}
 
