@@ -20,6 +20,33 @@ void Ball::setAngle(double angle)
 
 void Ball::manageCollisionWith(sf::RenderWindow & window)
 {
+	// Si la balle sort de l'écran (par en haut)
+	if (position.y <= 0)
+	{
+		// Inverse la direction sur l'axe y
+		direction.y *= -1;
+	}
+
+	// Si la balle sort de l'écran (par en haut)
+	if (position.y >= (window.getSize().y) -2*radius)
+	{
+		// Inverse la direction sur l'axe y
+		direction.y *= -1;
+	}
+
+	// Si la balle sort de l'écran (par en haut)
+	if (position.x <= 0)
+	{
+		// Inverse la direction sur l'axe y
+		direction.x *= -1;
+	}
+
+	// Si la balle sort de l'écran (par en haut)
+	if (position.x >= (window.getSize().x) - 2 * radius)
+	{
+		// Inverse la direction sur l'axe y
+		direction.x *= -1;
+	}
 }
 
 Ball::Ball(int x, int y, int radius, float speed)
@@ -46,6 +73,7 @@ void Ball::move(float ellapsedTime)
 
 void Ball::draw(sf::RenderWindow & window)
 {
+	shape.setPosition(position);
 	window.draw(shape);
 }
 

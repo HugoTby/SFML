@@ -1,45 +1,45 @@
 #include <SFML/Graphics.hpp>
 #include "Ball.h"
-#include "Player.h"
-#include "Brick.h"
 
 double mapValue(double x, double a, double b, double c, double d) {
 	double y = (x - a) / (b - a) * (d - c) + c;
 	return y;
 }
 
+
 int main(int argc, char **argv)
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Projet SFML");
-	sf::RectangleShape rectanglehaut(sf::Vector2f(800, 50));
-	sf::RectangleShape rectanglebas(sf::Vector2f(800, 550));
+	Ball ball(200, 250, 50, 200);
+	sf::RenderWindow window(sf::VideoMode(1200, 700), "Projet SFML");
+	/*sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
+	sf::RenderWindow window(fullscreenMode, "Projet SFML", sf::Style::Fullscreen);*/
+
+	sf::RectangleShape rectangle;
+	rectangle.setSize(sf::Vector2f(100, 50));
+	rectangle.setFillColor(sf::Color::Cyan);
+	rectangle.setOutlineColor(sf::Color::Magenta);
+	rectangle.setOutlineThickness(2);
+	rectangle.setPosition(100, 100);
+
 	sf::CircleShape circle;
-	circle.setRadius(25);
-	circle.setPosition(0, 0);
-	circle.setFillColor(sf::Color(48, 51, 48));
-	circle.setOutlineColor(sf::Color::Red);
-	circle.setOutlineThickness(1);
+	circle.setRadius(10);
+	circle.setPosition(200, 170);
+	circle.setFillColor(sf::Color::Red);
+	circle.setOutlineColor(sf::Color::Yellow);
+	circle.setOutlineThickness(2);
 
 	sf::RectangleShape rdr2;
-	
 	rdr2.setSize(sf::Vector2f(window.getSize().x, 1));
 
-	Brick b();
+	sf::Clock clock;
+	sf::Vector3f xFactor(10, 20, 30);
+	float ellapsedTime = 0;
 
 
 	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
-		rectanglehaut.setPosition(0, 0);
-		rectanglehaut.setFillColor(sf::Color(48, 51, 48));
-		
-		/*rectanglehaut.setOutlineColor(sf::Color::Red);
-		rectanglehaut.setOutlineThickness(5);*/                  // Bordure
-
-		rectanglebas.setPosition(0, 50);
-		rectanglebas.setFillColor(sf::Color(82, 82, 82));
-
-		
+		ellapsedTime = clock.restart().asSeconds();
 
 		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		sf::Event event;
@@ -50,23 +50,26 @@ int main(int argc, char **argv)
 				window.close();
 		}
 
-		// effacer la fenêtre (avec une couleur de fond)
-		window.clear(sf::Color::Black);
+		ball.move(ellapsedTime);
+		ball.manageCollisionWith(window);
 
-		// dessiner le rectangle sur la fenêtre
-		
-		window.draw(rectanglehaut);
-		window.draw(rectanglebas);
-		window.draw(circle);
+		window.clear();
+
 		for (int i = 0; i < window.getSize().y; i++)
 		{
 			double mappedValue = mapValue(i, 0, window.getSize().y, 0, 200);
 			rdr2.setFillColor(sf::Color(mappedValue, mappedValue, 255));
 			rdr2.setPosition(0, i);
 			window.draw(rdr2);
-		}
 
-		// afficher le contenu de la fenêtre à l'écran
+			/*double mappedValue = mapValue(i, 0, window.getSize().y, 0, 255);
+			rdr2.setFillColor(sf::Color(mappedValue, mappedValue * xFactor.x * ellapsedTime, mappedValue * xFactor.y * ellapsedTime, mappedValue * xFactore.z * ellapsedTime));
+			rdr2.setPosition(0, i);
+			window.draw(rdr2);*/
+		}
+		window.draw(rectangle);
+		window.draw(circle);
+		ball.draw(window);
 		window.display();
 	}
 

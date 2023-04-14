@@ -16,7 +16,7 @@ private:
 	double randomizeAngle();
 	void setAngle(double angle);
 
-	void manageCollisionWith(sf::RenderWindow& window); //Collisions bordures
+	
 
 	//void manageCollisionWith(Player& player); //Collisions plateforme
 
@@ -29,6 +29,7 @@ public:
 	void setSpeed(float newSpeed);
 	void setPosition(sf::Vector2f newPosition);
 	void setDirection(sf::Vector2f newDirection);
+	void manageCollisionWith(sf::RenderWindow& window); //Collisions bordures
 };
 
 #endif // BALL_H
