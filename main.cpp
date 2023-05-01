@@ -1,15 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include "Ball.h"
+#include "Player.h"
 
 double mapValue(double x, double a, double b, double c, double d) {
 	double y = (x - a) / (b - a) * (d - c) + c;
 	return y;
 }
 
-
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	Ball ball(200, 250, 50, 200);
+	Ball ball(200, 250, 20, 200);
 	sf::RenderWindow window(sf::VideoMode(1200, 700), "Projet SFML");
 	/*sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
 	sf::RenderWindow window(fullscreenMode, "Projet SFML", sf::Style::Fullscreen);*/
@@ -35,19 +35,38 @@ int main(int argc, char **argv)
 	sf::Vector3f xFactor(10, 20, 30);
 	float ellapsedTime = 0;
 
+	Player player(500, 600, 100, 20);
 
-	// on fait tourner le programme jusqu'� ce que la fen�tre soit ferm�e
+	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
 		ellapsedTime = clock.restart().asSeconds();
 
-		// on inspecte tous les �v�nements de la fen�tre qui ont �t� �mis depuis la pr�c�dente it�ration
+		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			// �v�nement "fermeture demand�e" : on ferme la fen�tre
+			// évènement "fermeture demandée" : on ferme la fenêtre
 			if (event.type == sf::Event::Closed)
 				window.close();
+		}
+
+		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
+		sf::Event event2;
+		while (window.pollEvent(event2))
+		{
+			// évènement "fermeture demandée" : on ferme la fenêtre
+			if (event2.type == sf::Event::Closed)
+				window.close();
+
+			// événements clavier : on déplace le joueur vers la gauche ou la droite
+			if (event2.type == sf::Event::KeyPressed)
+			{
+				if (event2.key.code == sf::Keyboard::Left)
+					player.moveLeft(ellapsedTime);
+				else if (event2.key.code == sf::Keyboard::Right)
+					player.moveRight(ellapsedTime);
+			}
 		}
 
 		ball.move(ellapsedTime);
@@ -68,6 +87,7 @@ int main(int argc, char **argv)
 			window.draw(rdr2);*/
 		}
 		window.draw(rectangle);
+		player.draw(window);
 		window.draw(circle);
 		ball.draw(window);
 		window.display();
