@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Ball.h"
+#include "Brick.h"
 #include "Player.h"
 
 double mapValue(double x, double a, double b, double c, double d) {
@@ -9,68 +10,66 @@ double mapValue(double x, double a, double b, double c, double d) {
 
 int main(int argc, char** argv)
 {
-	Ball ball(200, 250, 20, 200);
+	std::deque<Brick*> bricks;
+	Ball ball(200, 250, 10, 550); 
+	Player player(550, 100, 11);
 	sf::RenderWindow window(sf::VideoMode(1200, 700), "Projet SFML");
-	/*sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
-	sf::RenderWindow window(fullscreenMode, "Projet SFML", sf::Style::Fullscreen);*/
 
-	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(100, 50));
-	rectangle.setFillColor(sf::Color::Cyan);
-	rectangle.setOutlineColor(sf::Color::Magenta);
-	rectangle.setOutlineThickness(2);
-	rectangle.setPosition(100, 100);
 
-	sf::CircleShape circle;
-	circle.setRadius(10);
-	circle.setPosition(200, 170);
-	circle.setFillColor(sf::Color::Red);
-	circle.setOutlineColor(sf::Color::Yellow);
-	circle.setOutlineThickness(2);
+	int numBricksPerLine = 10; 
+	int brickWidth = 80; 
+	int brickHeight = 30; 
+	int horizontalSpacing = (window.getSize().x - numBricksPerLine * brickWidth) / (numBricksPerLine + 1); 
+	int verticalSpacing = 30; 
+	for (int i = 0; i < 4; i++) { 
+		for (int j = 0; j < numBricksPerLine; j++) { 
+			int x = horizontalSpacing + j * (brickWidth + horizontalSpacing); 
+			int y = verticalSpacing + i * (brickHeight + verticalSpacing); 
+			bricks.push_back(new Brick(x, y, brickWidth, brickHeight, 3));
+		}
+	}
+
 
 	sf::RectangleShape rdr2;
 	rdr2.setSize(sf::Vector2f(window.getSize().x, 1));
 
+
+
+	sf::RectangleShape windowRect;
+	windowRect.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+
 	sf::Clock clock;
-	sf::Vector3f xFactor(10, 20, 30);
-	float ellapsedTime = 0;
+	sf::Vector2i mousePos;
+	float elapsedTime = 0, maxBallPosY = 550.f;
+	int life = 10;
+	
 
-	Player player(500, 600, 100, 20);
-
-	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
-		ellapsedTime = clock.restart().asSeconds();
 
-		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
+		elapsedTime = clock.restart().asSeconds();
+
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			// évènement "fermeture demandée" : on ferme la fenêtre
+
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
 
-		// on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
-		sf::Event event2;
-		while (window.pollEvent(event2))
+		float playerSpeed = 300.f;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
-			// évènement "fermeture demandée" : on ferme la fenêtre
-			if (event2.type == sf::Event::Closed)
-				window.close();
-
-			// événements clavier : on déplace le joueur vers la gauche ou la droite
-			if (event2.type == sf::Event::KeyPressed)
-			{
-				if (event2.key.code == sf::Keyboard::Left)
-					player.moveLeft(ellapsedTime);
-				else if (event2.key.code == sf::Keyboard::Right)
-					player.moveRight(ellapsedTime);
-			}
+			player.move(-playerSpeed * elapsedTime);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			player.move(playerSpeed * elapsedTime);
 		}
 
-		ball.move(ellapsedTime);
-		ball.manageCollisionWith(window);
+		ball.move(elapsedTime);
+		ball.manageCollisionWithWindow(window);
 
 		window.clear();
 
@@ -81,16 +80,27 @@ int main(int argc, char** argv)
 			rdr2.setPosition(0, i);
 			window.draw(rdr2);
 
-			/*double mappedValue = mapValue(i, 0, window.getSize().y, 0, 255);
-			rdr2.setFillColor(sf::Color(mappedValue, mappedValue * xFactor.x * ellapsedTime, mappedValue * xFactor.y * ellapsedTime, mappedValue * xFactore.z * ellapsedTime));
-			rdr2.setPosition(0, i);
-			window.draw(rdr2);*/
 		}
-		window.draw(rectangle);
+		player.update(elapsedTime);
 		player.draw(window);
-		window.draw(circle);
 		ball.draw(window);
+		for (int i = 0; i < bricks.size(); i++)
+		{
+			if (bricks[i]->isAlive())
+			{
+				bricks[i]->draw(window);
+				ball.manageCollisionWithBrick(bricks[i]);
+			}
+			else
+			{
+				bricks[i]->destroyAndDelete(bricks);
+			}
+		}
 		window.display();
+
+		ball.manageCollisionWithPlayer(player);
+
+		
 	}
 
 	return 0;
